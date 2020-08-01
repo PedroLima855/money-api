@@ -20,6 +20,11 @@ public class LancamentoResource {
 
 	private LancamentoServiceImpl lancamentoServiceImpl;
 	
+	public LancamentoResource(LancamentoServiceImpl lancamentoServiceImpl) {
+		super();
+		this.lancamentoServiceImpl = lancamentoServiceImpl;
+	}
+
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<Lancamento> listar(){

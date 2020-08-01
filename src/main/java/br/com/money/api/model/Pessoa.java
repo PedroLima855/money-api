@@ -22,7 +22,7 @@ public class Pessoa {
 
 	@Embedded
 	private Endereco endereco;
-
+	
 	public Long getId() {
 		return id;
 	}
