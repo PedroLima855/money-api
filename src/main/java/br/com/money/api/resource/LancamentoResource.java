@@ -2,10 +2,14 @@ package br.com.money.api.resource;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +40,10 @@ public class LancamentoResource {
 		return lancamentoServiceImpl.buscarPorId(id);
 	}
 
-
+	@PostMapping
+	public ResponseEntity<Lancamento> salvarLancamento(@RequestBody Lancamento lancamento, HttpServletResponse response){
+		return lancamentoServiceImpl.salvar(lancamento, response);
+	}
 
 
 

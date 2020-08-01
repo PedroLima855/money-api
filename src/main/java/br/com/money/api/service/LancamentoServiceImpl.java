@@ -3,10 +3,15 @@ package br.com.money.api.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import br.com.money.api.event.RecursoCriadoEvent;
 import br.com.money.api.model.Lancamento;
 import br.com.money.api.repository.LancamentoRepository;
 
@@ -14,10 +19,13 @@ import br.com.money.api.repository.LancamentoRepository;
 public class LancamentoServiceImpl implements LacamentoService {
 
 	private LancamentoRepository lancamentoRepository;
+	private ApplicationEventPublisher publisher;
 
-	public LancamentoServiceImpl(LancamentoRepository lancamentoRepository) {
+	@Autowired
+	public LancamentoServiceImpl(LancamentoRepository lancamentoRepository, ApplicationEventPublisher publisher) {
 		super();
 		this.lancamentoRepository = lancamentoRepository;
+		this.publisher = publisher;
 	}
 
 	// Retorna todos
@@ -39,6 +47,17 @@ public class LancamentoServiceImpl implements LacamentoService {
 
 		return ResponseEntity.noContent().build();
 
+	}
+
+	// Salva um registro
+	@Override
+	public ResponseEntity<Lancamento> salvar(Lancamento lancamento, HttpServletResponse response) {
+	
+		Lancamento lancamentoSalvo = lancamentoRepository.save(lancamento);
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getId()));
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
+		
 	}
 
 
