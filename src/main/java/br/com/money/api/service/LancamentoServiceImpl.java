@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import br.com.money.api.event.RecursoCriadoEvent;
 import br.com.money.api.model.Lancamento;
 import br.com.money.api.repository.LancamentoRepository;
+import br.com.money.api.repository.filter.LancamentoFilter;
 
 @Service
 public class LancamentoServiceImpl implements LacamentoService {
@@ -30,9 +31,9 @@ public class LancamentoServiceImpl implements LacamentoService {
 
 	// Retorna todos
 	@Override
-	public List<Lancamento> listarTodos() {
+	public List<Lancamento> listarTodos(LancamentoFilter lancamentoFilter) {
 
-		return lancamentoRepository.findAll();
+		return lancamentoRepository.filtrar(lancamentoFilter);
 	}
 
 	// Faz busca pelo id
@@ -52,13 +53,25 @@ public class LancamentoServiceImpl implements LacamentoService {
 	// Salva um registro
 	@Override
 	public ResponseEntity<Lancamento> salvar(Lancamento lancamento, HttpServletResponse response) {
-	
+
 		Lancamento lancamentoSalvo = lancamentoRepository.save(lancamento);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getId()));
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
-		
+
 	}
 
+	@Override
+	public ResponseEntity<Void> deletar(Long id) {
+
+		if (!lancamentoRepository.existsById(id)) {
+			return ResponseEntity.notFound().build();
+		}
+
+		lancamentoRepository.deleteById(id);
+
+		return ResponseEntity.noContent().build();
+
+	}
 
 }

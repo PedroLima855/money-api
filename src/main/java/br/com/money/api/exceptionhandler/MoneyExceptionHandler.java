@@ -60,7 +60,7 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 		
 	}
-
+	
 	// Cria a Lista de Erros
 	private List<Erro> criarListaDeErro(BindingResult bindingResult) {
 		List<Erro> erros = new ArrayList<>();

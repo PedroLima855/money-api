@@ -3,9 +3,11 @@ package br.com.money.api.resource;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.money.api.model.Lancamento;
+import br.com.money.api.repository.filter.LancamentoFilter;
 import br.com.money.api.service.LancamentoServiceImpl;
 
 @RestController
@@ -31,8 +34,8 @@ public class LancamentoResource {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<Lancamento> listar(){
-		return lancamentoServiceImpl.listarTodos();
+	public List<Lancamento> listar(LancamentoFilter lancamentoFilter){
+		return lancamentoServiceImpl.listarTodos(lancamentoFilter);
 	}
 	
 	@GetMapping("/{id}")
@@ -41,10 +44,14 @@ public class LancamentoResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<Lancamento> salvarLancamento(@RequestBody Lancamento lancamento, HttpServletResponse response){
+	public ResponseEntity<Lancamento> salvarLancamento(@Valid @RequestBody Lancamento lancamento, HttpServletResponse response){
 		return lancamentoServiceImpl.salvar(lancamento, response);
 	}
 
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deletarLancamento(@PathVariable Long id){
+		return lancamentoServiceImpl.deletar(id);
+	}
 
 
 
