@@ -1,10 +1,10 @@
 package br.com.money.api.resource;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,8 +34,8 @@ public class LancamentoResource {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<Lancamento> listar(LancamentoFilter lancamentoFilter){
-		return lancamentoServiceImpl.listarTodos(lancamentoFilter);
+	public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable){
+		return lancamentoServiceImpl.listarTodos(lancamentoFilter, pageable);
 	}
 	
 	@GetMapping("/{id}")
