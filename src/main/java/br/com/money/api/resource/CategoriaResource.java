@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,16 +32,19 @@ public class CategoriaResource {
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
 	public List<Categoria> listar() {
 		return categoriaServiceImpl.listarTodos();
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
 	public ResponseEntity<Categoria> buscarPorId(@PathVariable Long id) {
 		return categoriaServiceImpl.buscarPorId(id);
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')")
 	public ResponseEntity<Categoria> criarCategoria(@Valid @RequestBody Categoria categoria,
 			HttpServletResponse response) {
 		return categoriaServiceImpl.salvar(categoria, response);
