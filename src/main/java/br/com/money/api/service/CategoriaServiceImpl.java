@@ -16,25 +16,24 @@ import br.com.money.api.model.Categoria;
 import br.com.money.api.repository.CategoriaRepository;
 
 @Service
-public class CategoriaServiceImpl implements CategoriaService {
+public class CategoriaServiceImpl {
 	
 	private CategoriaRepository categoriaRepository;
 	private ApplicationEventPublisher publisher;
 	
 	@Autowired
 	public CategoriaServiceImpl(CategoriaRepository categoriaRepository, ApplicationEventPublisher publisher) {
-		super();
 		this.categoriaRepository = categoriaRepository;
 		this.publisher = publisher;
 	}
 
-	@Override
+	// Lista as categorias
 	public List<Categoria> listarTodos() {
 	
 		return categoriaRepository.findAll();
 	}
 
-	@Override
+	// Faz uma busca de categoria por id
 	public ResponseEntity<Categoria> buscarPorId(Long id) {
 		Optional<Categoria> buscarId = categoriaRepository.findById(id);
 		
@@ -45,7 +44,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 		return ResponseEntity.notFound().build();
 	}
 
-	@Override
+	// Salva uma categoria
 	public ResponseEntity<Categoria> salvar(Categoria categoria, HttpServletResponse response) {
 	
 		Categoria categoriaSalva = categoriaRepository.save(categoria);
