@@ -16,7 +16,7 @@ import br.com.money.api.model.Pessoa;
 import br.com.money.api.repository.PessoaRepository;
 
 @Service
-public class PessoaServiceImpl implements PessoaService {
+public class PessoaServiceImpl {
 	
 	
 	private PessoaRepository pessoaRepository;
@@ -30,14 +30,12 @@ public class PessoaServiceImpl implements PessoaService {
 	}
 
 	// Lista todos
-	@Override
 	public List<Pessoa> listar() {
 		
 		return pessoaRepository.findAll();
 	}
 
 	// Faz uma busca por Id
-	@Override
 	public ResponseEntity<Pessoa> buscarPorId(Long id) {
 		
 		Optional<Pessoa> listarId = pessoaRepository.findById(id);
@@ -46,11 +44,10 @@ public class PessoaServiceImpl implements PessoaService {
 			return new ResponseEntity<Pessoa>(listarId.get(), HttpStatus.OK);
 		}
 		
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.notFound().build();
 	}
 
 	// Salva um registro
-	@Override
 	public ResponseEntity<Pessoa> salvarPessoa(Pessoa pessoa, HttpServletResponse response) {
 		
 		Pessoa pessoaSalva = pessoaRepository.save(pessoa);
@@ -60,7 +57,6 @@ public class PessoaServiceImpl implements PessoaService {
 	}
 
 	// Edita um registro
-	@Override
 	public ResponseEntity<Pessoa> editarPessoa(Long id, Pessoa pessoa) {
 	
 		if (!pessoaRepository.existsById(id)) {
@@ -74,7 +70,6 @@ public class PessoaServiceImpl implements PessoaService {
 	}
 
 	// Deleta um registro
-	@Override
 	public ResponseEntity<Void> deletarPessoa(Long id) {
 	
 		if (!pessoaRepository.existsById(id)) {
@@ -87,7 +82,6 @@ public class PessoaServiceImpl implements PessoaService {
 	}
 
 	// Edita a propriedade ativo
-	@Override
 	public ResponseEntity<Void> atualizarAtivo(Long id, Boolean ativo) {
 		
 		if(!pessoaRepository.existsById(id)) {
