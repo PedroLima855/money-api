@@ -2,7 +2,9 @@ package br.com.money.api.resource;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
+import br.com.money.api.dto.LancamentoEstatisticaCategoria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,13 @@ public class LancamentoResource {
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO')")
 	public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable){
 		return lancamentoServiceImpl.listarTodos(lancamentoFilter, pageable);
+	}
+
+	@GetMapping("/estatisticas/por-categoria")
+	@ResponseStatus(HttpStatus.OK)
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO')")
+	public List<LancamentoEstatisticaCategoria> estatisticaPorCategoria(){
+		return lancamentoServiceImpl.porCategoriaService();
 	}
 	
 	@GetMapping("/{id}")

@@ -1,9 +1,12 @@
 package br.com.money.api.service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.money.api.dto.LancamentoEstatisticaCategoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -73,6 +76,9 @@ public class LancamentoServiceImpl {
 
 	}
 
-
+	// Retorna lista de estatisticas
+	public List<LancamentoEstatisticaCategoria> porCategoriaService(){
+		return this.lancamentoRepository.porCategoria(LocalDate.now());
+	}
 
 }

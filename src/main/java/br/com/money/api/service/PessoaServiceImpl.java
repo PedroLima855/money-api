@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.money.api.dto.LancamentoEstatisticaCategoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -94,7 +95,6 @@ public class PessoaServiceImpl {
 		
 		return ResponseEntity.noContent().build();
 	}
-
 	
 
 }
