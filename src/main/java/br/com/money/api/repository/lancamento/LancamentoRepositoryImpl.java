@@ -13,6 +13,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import br.com.money.api.dto.LancamentoEstatisticaCategoria;
+import br.com.money.api.dto.LancamentoEstatisticaDia;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,29 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 	@PersistenceContext
 	private EntityManager manager;
 
+	@Override
+	public List<LancamentoEstatisticaDia> porDia(LocalDate mesReferencia) {
+
+		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		CriteriaQuery<LancamentoEstatisticaDia> criteria = criteriaBuilder.createQuery(LancamentoEstatisticaDia.class);
+
+		Root<Lancamento> root = criteria.from(Lancamento.class);
+
+		criteria.select(criteriaBuilder.construct(LancamentoEstatisticaDia.class,
+				root.get("tipo"), root.get("dataVencimento"), criteriaBuilder.sum(root.get("valor"))));
+
+		LocalDate primeiroDia = mesReferencia.withDayOfMonth(1);
+		LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth());
+
+		criteria.where(criteriaBuilder.greaterThanOrEqualTo(root.get("dataVencimento"), primeiroDia),
+				criteriaBuilder.lessThanOrEqualTo(root.get("dataVencimento"), ultimoDia));
+
+		criteria.groupBy(root.get("tipo"), root.get("dataVencimento"));
+
+		TypedQuery<LancamentoEstatisticaDia> query = manager.createQuery(criteria);
+
+		return query.getResultList();
+	}
 
 	@Override
 	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate mesReferencia) {

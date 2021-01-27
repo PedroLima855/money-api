@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.money.api.dto.LancamentoEstatisticaCategoria;
+import br.com.money.api.dto.LancamentoEstatisticaDia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -32,8 +33,6 @@ public class LancamentoServiceImpl {
 		this.lancamentoRepository = lancamentoRepository;
 		this.publisher = publisher;
 	}
-
-	
 
 	public Page<Lancamento> listarTodos(LancamentoFilter lancamentoFilter, Pageable pageable) {
 
@@ -76,9 +75,14 @@ public class LancamentoServiceImpl {
 
 	}
 
-	// Retorna lista de estatisticas
+	// Retorna lista de estatisticas por categoria
 	public List<LancamentoEstatisticaCategoria> porCategoriaService(){
 		return this.lancamentoRepository.porCategoria(LocalDate.now());
+	}
+
+	// Retorna lista de estatisticas por dia
+	public List<LancamentoEstatisticaDia> porDiaService(){
+		return this.lancamentoRepository.porDia(LocalDate.now());
 	}
 
 }

@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import br.com.money.api.dto.LancamentoEstatisticaCategoria;
+import br.com.money.api.dto.LancamentoEstatisticaDia;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,13 @@ public class LancamentoResource {
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO')")
 	public List<LancamentoEstatisticaCategoria> estatisticaPorCategoria(){
 		return lancamentoServiceImpl.porCategoriaService();
+	}
+
+	@GetMapping("/estatisticas/por-dia")
+	@ResponseStatus(HttpStatus.OK)
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO')")
+	public List<LancamentoEstatisticaDia> estatisticaPorDia(){
+		return lancamentoServiceImpl.porDiaService();
 	}
 	
 	@GetMapping("/{id}")
