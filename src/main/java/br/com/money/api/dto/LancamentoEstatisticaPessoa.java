@@ -40,4 +40,11 @@ public class LancamentoEstatisticaPessoa {
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
+
+	@Override
+	public String toString() {
+		return "LancamentoEstatisticaPessoa [tipo=" + tipo + ", pessoa=" + pessoa + ", total=" + total + "]";
+	}
+    
+    
 }
