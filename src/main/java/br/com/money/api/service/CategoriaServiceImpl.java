@@ -18,10 +18,10 @@ import br.com.money.api.repository.CategoriaRepository;
 
 @Service
 public class CategoriaServiceImpl {
-	
+
 	private CategoriaRepository categoriaRepository;
 	private ApplicationEventPublisher publisher;
-	
+
 	@Autowired
 	public CategoriaServiceImpl(CategoriaRepository categoriaRepository, ApplicationEventPublisher publisher) {
 		this.categoriaRepository = categoriaRepository;
@@ -30,31 +30,23 @@ public class CategoriaServiceImpl {
 
 	// Lista as categorias
 	public List<Categoria> listarTodos() {
-	
+
 		return categoriaRepository.findAll();
 	}
 
 	// Faz uma busca de categoria por id
-	public ResponseEntity<Categoria> buscarPorId(Long id) {
-		Optional<Categoria> buscarId = categoriaRepository.findById(id);
-		
-		if (buscarId.isPresent()) {
-			return new ResponseEntity<Categoria>(buscarId.get(), HttpStatus.OK);
-		}
-
-		return ResponseEntity.notFound().build();
+	public Optional<Categoria> buscarPorId(Long id) {
+		Optional<Categoria> categoria = categoriaRepository.findById(id);
+		return categoria;
 	}
 
 	// Salva uma categoria
-	public ResponseEntity<Categoria> salvar(Categoria categoria, HttpServletResponse response) {
-	
+	public Categoria salvar(Categoria categoria, HttpServletResponse response) {
+
 		Categoria categoriaSalva = categoriaRepository.save(categoria);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getId()));
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
+		return categoriaSalva;
 	}
-
-
-
 
 }

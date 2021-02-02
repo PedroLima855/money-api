@@ -1,6 +1,7 @@
 package br.com.money.api.resource;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -40,12 +41,17 @@ public class CategoriaResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
 	public ResponseEntity<Categoria> buscarPorId(@PathVariable Long id) {
-		return categoriaServiceImpl.buscarPorId(id);
+		Optional<Categoria> categoria = categoriaServiceImpl.buscarPorId(id);
+		if (categoria.isPresent()) {
+			return new ResponseEntity<Categoria>(categoria.get(), HttpStatus.OK);
+		}
+		return new ResponseEntity<Categoria>(HttpStatus.NO_CONTENT);
 	}
 
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')")
-	public ResponseEntity<Categoria> criarCategoria(@Valid @RequestBody Categoria categoria,
+	public Categoria criarCategoria(@Valid @RequestBody Categoria categoria,
 			HttpServletResponse response) {
 		return categoriaServiceImpl.salvar(categoria, response);
 	}

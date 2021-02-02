@@ -1,6 +1,7 @@
 package br.com.money.api.resource;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -25,9 +26,8 @@ import br.com.money.api.service.PessoaServiceImpl;
 @RequestMapping("/pessoas")
 public class PessoaResource {
 
-
 	private PessoaServiceImpl pessoaServiceImpl;
-	
+
 	public PessoaResource(PessoaServiceImpl pessoaServiceImpl) {
 		super();
 		this.pessoaServiceImpl = pessoaServiceImpl;
@@ -39,37 +39,57 @@ public class PessoaResource {
 	public List<Pessoa> listar() {
 		return pessoaServiceImpl.listar();
 	}
-	
+
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA')")
 	public ResponseEntity<Pessoa> buscarId(@PathVariable Long id) {
-		return pessoaServiceImpl.buscarPorId(id);
+		Optional<Pessoa> pessoa = pessoaServiceImpl.buscarPorId(id);
+
+		if (pessoa.isPresent()) {
+			return new ResponseEntity<Pessoa>(pessoa.get(), HttpStatus.OK);
+		}
+		return ResponseEntity.notFound().build();
 	}
-	
+
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA')")
-	public ResponseEntity<Pessoa> salvar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response){
+	public Pessoa salvar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
 		return pessoaServiceImpl.salvarPessoa(pessoa, response);
 	}
-	
+
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA')")
-	public ResponseEntity<Pessoa> editarPessoa(@Valid @RequestBody Pessoa pessoa, @PathVariable Long id){
-		return pessoaServiceImpl.editarPessoa(id, pessoa);
+	public ResponseEntity<Pessoa> editarPessoa(@Valid @RequestBody Pessoa pessoa, @PathVariable Long id) {
+		
+		Optional<Pessoa> retorno = pessoaServiceImpl.buscarPorId(id);
+		
+		if (!retorno.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		Pessoa pessoaEdit = pessoaServiceImpl.editarPessoa(id, pessoa);
+		return ResponseEntity.ok(pessoaEdit);
 	}
-	
+
 	@PutMapping("/{id}/ativo")
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA')")
-	public ResponseEntity<Void> editarAtivo(@PathVariable Long id, @RequestBody Boolean ativo){
+	public ResponseEntity<Void> editarAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
 		return pessoaServiceImpl.atualizarAtivo(id, ativo);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA')")
-	public ResponseEntity<Void> deletar(@PathVariable Long id){
-		return pessoaServiceImpl.deletarPessoa(id);
+	public ResponseEntity<Void> deletar(@PathVariable Long id) {
+		
+		Optional<Pessoa> pessoa = pessoaServiceImpl.buscarPorId(id);
+		
+		if (!pessoa.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		pessoaServiceImpl.deletarPessoa(id);
+		return ResponseEntity.noContent().build();
 	}
-	
-	
 
 }

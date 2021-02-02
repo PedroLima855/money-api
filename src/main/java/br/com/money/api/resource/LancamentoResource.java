@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import br.com.money.api.dto.LancamentoEstatisticaCategoria;
 import br.com.money.api.dto.LancamentoEstatisticaDia;
@@ -75,20 +76,35 @@ public class LancamentoResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO')")
 	public ResponseEntity<Lancamento> buscarId(@PathVariable Long id) {
-		return lancamentoServiceImpl.buscarPorId(id);
+
+		Optional<Lancamento> lancamento = lancamentoServiceImpl.buscarPorId(id);
+
+		if (lancamento.isPresent()) {
+			return new ResponseEntity<Lancamento>(lancamento.get(), HttpStatus.OK);
+		}
+
+		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')")
-	public ResponseEntity<Lancamento> salvarLancamento(@Valid @RequestBody Lancamento lancamento,
-			HttpServletResponse response) {
+	public Lancamento salvarLancamento(@Valid @RequestBody Lancamento lancamento, HttpServletResponse response) {
 		return lancamentoServiceImpl.salvar(lancamento, response);
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO')")
 	public ResponseEntity<Void> deletarLancamento(@PathVariable Long id) {
-		return lancamentoServiceImpl.deletar(id);
+
+		Optional<Lancamento> lancamento = lancamentoServiceImpl.buscarPorId(id);
+
+		if (!lancamento.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		lancamentoServiceImpl.deletar(id);
+		return ResponseEntity.noContent().build();
 	}
 
 }
