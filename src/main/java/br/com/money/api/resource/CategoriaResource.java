@@ -45,7 +45,7 @@ public class CategoriaResource {
 		if (categoria.isPresent()) {
 			return new ResponseEntity<Categoria>(categoria.get(), HttpStatus.OK);
 		}
-		return new ResponseEntity<Categoria>(HttpStatus.NO_CONTENT);
+		return ResponseEntity.notFound().build();
 	}
 
 	@PostMapping
